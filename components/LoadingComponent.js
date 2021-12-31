@@ -1,31 +1,36 @@
-import Image from "next/image";
 import CircularProgress from '@mui/material/CircularProgress'
+import { Box, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100vh",
+  },
+  LoadingText: {
+    marginTop: "20px",
+  },
+}));
 
 
 function LoadingComponent() {
+  const classes = useStyles();
   return (
-    <center
-      style={{
-        display: "grid",
-        placeItems: "center",
-        height: "100vh",
-      }}
+    <Box
+      className={classes.root}
     >
-      <div>
-        <Image
-          src="/logo.svg"
-          alt=""
-          height={200}
-          width={200}
-          className={{ marginBottom: 10 }}
-        />
         <CircularProgress
 				color="secondary"
 				size={100}
-				thickness={5}
-			/>
-      </div>
-    </center>
+        thickness={5}
+      />
+      <Typography className={classes.LoadingText} variant="h5">
+        Loading...
+      </Typography>
+    </Box>
   );
 }
 
