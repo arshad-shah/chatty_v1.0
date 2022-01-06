@@ -26,6 +26,8 @@ import { makeStyles } from "@mui/styles";
 import dynamic from "next/dynamic";
 import UploadDialog from "./uploadDialog";
 
+import { parse } from "zipson";
+
 const PickerWithNoSSR = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
 });
@@ -36,6 +38,16 @@ const useStyles = makeStyles((theme) => ({
   },
   InputContainer: {
     display: "flex",
+    flexDirection: "column",
+    padding: "10px",
+    position: "sticky",
+    bottom: 0,
+    backgroundColor: "white",
+    zIndex: 100,
+  },
+  messageInput: {
+    display: "flex",
+    flexDirection: "row",
     alignItems: "center",
     padding: "10px",
     position: "sticky",
@@ -90,7 +102,6 @@ function ChatScreen({ chat, messages }) {
 
   const onEmojiClick = (event, emojiObject) => {
     setInput((prevInput) => prevInput + emojiObject.emoji);
-    setOpenPicker(false);
   };
 
   const [user] = useAuthState(auth);
@@ -130,7 +141,8 @@ function ChatScreen({ chat, messages }) {
         />
       ));
     } else {
-      return JSON.parse(messages).map((message) => (
+      const parsedZipson = parse(messages);
+      return parsedZipson.map((message) => (
         <Message key={message.id} user={message.user} message={message} />
       ));
     }
@@ -146,6 +158,7 @@ function ChatScreen({ chat, messages }) {
       { merge: true }
     );
 
+    //TODO: encrypt using recipient email as key
     db.collection("chats").doc(router.query.id).collection("messages").add({
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       message: input,
@@ -195,46 +208,51 @@ function ChatScreen({ chat, messages }) {
         <Box className={classes.EndOfMessage} ref={endOfMessageRef} />
       </Box>
 
-      <form className={classes.InputContainer}>
-        <IconButton size="large" onClick={() => setOpenPicker((val) => !val)}>
-          <InsertEmoticon />
-        </IconButton>
-        <TextField
-          multiline
-          variant="outlined"
-          fullWidth
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          // TODO: the attachment button is not working yet it needs to show the picture as it uploads it on both sides
-          // InputProps={{
-          //   endAdornment: (
-          //     <UploadDialog setFileUrl={setFileUrl} chatId={router.query.id} />
-          //   ),
-          // }}
-        />
-        <IconButton size="large" onClick={sendMessage}>
-          <SendRounded />
-        </IconButton>
-      </form>
-      {openPicker && (
-        <PickerWithNoSSR
-          pickerStyle={{ width: "100%", bottom: 0 }}
-          onEmojiClick={onEmojiClick}
-          native
-          disableSearchBar
-          groupNames={{
-            smileys_people: "faces",
-            animals_nature: "nature",
-            food_drink: "food",
-            travel_places: "travel",
-            activities: "activities",
-            objects: "Objects",
-            symbols: "symbols",
-            flags: "flags",
-            recently_used: "recently Used",
-          }}
-        />
-      )}
+      <Box className={classes.InputContainer}>
+        <form className={classes.messageInput}>
+          <IconButton size="large" onClick={() => setOpenPicker((val) => !val)}>
+            <InsertEmoticon />
+          </IconButton>
+          <TextField
+            multiline
+            variant="outlined"
+            fullWidth
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            // TODO: the attachment button is not working yet it needs to show the picture as it uploads it on both sides
+            // InputProps={{
+            //   endAdornment: (
+            //     <UploadDialog setFileUrl={setFileUrl} chatId={router.query.id} />
+            //   ),
+            // }}
+          />
+          <IconButton size="large" onClick={sendMessage}>
+            <SendRounded />
+          </IconButton>
+        </form>
+        {openPicker && (
+          <PickerWithNoSSR
+            pickerStyle={{
+              width: "100%",
+              zIndex: 100,
+            }}
+            onEmojiClick={onEmojiClick}
+            native
+            disableSearchBar
+            groupNames={{
+              smileys_people: "faces",
+              animals_nature: "nature",
+              food_drink: "food",
+              travel_places: "travel",
+              activities: "activities",
+              objects: "Objects",
+              symbols: "symbols",
+              flags: "flags",
+              recently_used: "recently Used",
+            }}
+          />
+        )}
+      </Box>
     </Box>
   );
 }
