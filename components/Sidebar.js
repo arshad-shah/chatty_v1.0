@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, IconButton } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import ChatIcon from "@mui/icons-material/Chat";
 import * as EmailValidator from "email-validator";
 import { auth, db } from "../firebase";
@@ -13,17 +13,17 @@ const useStyles = makeStyles((theme) => ({
     borderRight: "1px solid whitesmoke",
   },
   Header: {
-  display: "flex",
-  position: "sticky",
-  top: 0,
-  backgroundColor: "white",
-  zIndex: 1,
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "15px",
-  height: "80px",
-  borderBottom: "1px solid whitesmoke",
-},
+    display: "flex",
+    position: "sticky",
+    top: 0,
+    backgroundColor: "white",
+    zIndex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px",
+    height: "80px",
+    borderBottom: "1px solid whitesmoke",
+  },
 }));
 function Sidebar() {
   const classes = useStyles();
@@ -46,11 +46,11 @@ function Sidebar() {
         users: [user.email, userToChat],
       });
     }
-  }
-
-  function createAChat(){
-    setOpen(true);
   };
+
+  function createAChat() {
+    setOpen(true);
+  }
 
   const chatAlreadyExists = (recipientEmail) =>
     !!chatSnapshot?.docs.find(

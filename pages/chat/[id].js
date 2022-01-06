@@ -6,24 +6,23 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { getRecipientEmailLite } from "../../utils/getRecipientEmail";
 import { Box, Hidden } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-
+import { stringify } from "zipson";
 
 const useStyles = makeStyles((theme) => ({
   Container: {
     display: "flex",
   },
 
-ChatContainer: {
-  flex: 1,
-  overflow: "scroll",
-  height: "100vh",
-  "::-webkit-scrollbar": {
-    display: "none",
+  ChatContainer: {
+    flex: 1,
+    overflow: "scroll",
+    height: "100vh",
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
+    "-ms-overflow-style": "none",
+    scrollbarWidth: "none",
   },
-  "-ms-overflow-style": "none",
-  scrollbarWidth: "none"
-},
-
 }));
 
 function Chat({ chat, messages }) {
@@ -74,7 +73,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      messages: JSON.stringify(messages),
+      messages: stringify(messages),
       chat: chat,
     },
   };
