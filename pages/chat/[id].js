@@ -21,7 +21,7 @@ ChatContainer: {
     display: "none",
   },
   "-ms-overflow-style": "none",
-  scrollbarWidth: "none",
+  scrollbarWidth: "none"
 },
 
 }));
