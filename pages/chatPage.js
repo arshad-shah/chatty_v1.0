@@ -14,16 +14,16 @@ const useStyles = makeStyles((theme) => ({
     borderRight: "1px solid whitesmoke",
   },
   Header: {
-  display: "flex",
-  position: "sticky",
-  top: 0,
-  backgroundColor: "white",
-  zIndex: 1,
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "15px",
-  height: "80px",
-borderBottom: "1px solid whitesmoke",
+    display: "flex",
+    position: "sticky",
+    top: 0,
+    backgroundColor: "white",
+    zIndex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px",
+    height: "80px",
+    borderBottom: "1px solid whitesmoke",
   },
 }));
 function ChatPage() {
@@ -38,22 +38,21 @@ function ChatPage() {
 
   const handleClose = (userToChat) => {
     setOpen(false);
-    setInput(userToChat);
-  };
-  const createAChat = () => {
-    setOpen(true);
-    if (!input) return null;
-
+    if (!userToChat) return null;
     if (
-      EmailValidator.validate(input) &&
-      !chatAlreadyExists(input) &&
-      input !== user.email
+      EmailValidator.validate(userToChat) &&
+      !chatAlreadyExists(userToChat) &&
+      userToChat !== user.email
     ) {
       db.collection("chats").add({
-        users: [user.email, input],
+        users: [user.email, userToChat],
       });
     }
   };
+
+  function createAChat() {
+    setOpen(true);
+  }
 
   const chatAlreadyExists = (recipientEmail) =>
     !!chatSnapshot?.docs.find(

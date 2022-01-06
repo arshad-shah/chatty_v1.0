@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 
 export default function Home() {
   return (
-    <div>
+    <Box>
       <Head>
         <title>chatty</title>
         <meta
@@ -13,8 +13,7 @@ export default function Home() {
         />
         <link rel="icon" href="/logo.svg" />
       </Head>
-
       <Sidebar />
-    </div>
+    </Box>
   );
 }
