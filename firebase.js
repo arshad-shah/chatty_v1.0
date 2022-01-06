@@ -1,6 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -18,5 +19,8 @@ const app = !firebase.apps.length
 const db = app.firestore();
 const auth = app.auth();
 
+// Get a reference to the storage service, which is used to create references in your storage bucket
+var storage = firebase.storage();
+
 const providerGoogle = new firebase.auth.GoogleAuthProvider();
-export { auth, db, providerGoogle };
+export { auth, db, storage, providerGoogle };

@@ -8,38 +8,36 @@ import {
   useCreateUserWithEmailAndPassword,
   useSignInWithEmailAndPassword,
 } from "react-firebase-hooks/auth";
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
-Container: {
-  display: "grid",
-  placeItems: "center",
-  height: "100vh",
-  backgroundColor: "whitesmoke",
-},
+  Container: {
+    display: "grid",
+    placeItems: "center",
+    height: "100vh",
+    backgroundColor: "whitesmoke",
+  },
 
-SignUpLink: {
-  padding: "10px",
-},
+  SignUpLink: {
+    padding: "10px",
+  },
 
-LoginContainer: {
-  padding: "100px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  backgroundColor: "white",
-  borderRadius: "5px",
-  boxShadow: "0px 4px 14px - 3px rgba(0, 0, 0, 0.7)",
-},
+  LoginContainer: {
+    padding: "100px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: "5px",
+    boxShadow: "0px 4px 14px - 3px rgba(0, 0, 0, 0.7)",
+  },
 
-Logo: {
-  height: "200px",
-  width: "200px",
-  marginBottom: "50px",
-},
-
-
+  Logo: {
+    height: "200px",
+    width: "200px",
+    marginBottom: "50px",
+  },
 }));
 
 function Login() {
@@ -202,11 +200,7 @@ function Login() {
         {!pageState ? (
           <Box className={classes.SignUpLink}>
             <p>Have an account</p>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => goToSignIn()}
-            >
+            <Button variant="outlined" fullWidth onClick={() => goToSignIn()}>
               Login
             </Button>
           </Box>

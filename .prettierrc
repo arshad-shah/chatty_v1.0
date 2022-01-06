@@ -1,0 +1,11 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "insertSpaces": true,
+  "cursorStyle": "line",
+  "lineNumbers": "on",
+  "folding": "all",
+  "matchBrackets": true,
+  "autoCloseBrackets": true,
+  "autoCloseTags": true
+}

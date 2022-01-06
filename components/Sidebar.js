@@ -33,25 +33,23 @@ function Sidebar() {
     .where("users", "array-contains", user.email);
   const [chatSnapshot] = useCollection(userChatRef);
   const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
 
   const handleClose = (userToChat) => {
     setOpen(false);
-    setInput(userToChat);
-  };
-  const createAChat = () => {
-    setOpen(true);
-    if (!input) return null;
-
+    if (!userToChat) return null;
     if (
-      EmailValidator.validate(input) &&
-      !chatAlreadyExists(input) &&
-      input !== user.email
+      EmailValidator.validate(userToChat) &&
+      !chatAlreadyExists(userToChat) &&
+      userToChat !== user.email
     ) {
       db.collection("chats").add({
-        users: [user.email, input],
+        users: [user.email, userToChat],
       });
     }
+  }
+
+  function createAChat(){
+    setOpen(true);
   };
 
   const chatAlreadyExists = (recipientEmail) =>
@@ -64,7 +62,7 @@ function Sidebar() {
       <Box className={classes.Header}>
         <Avatar src={user.photoURL} onClick={() => auth.signOut()} />
         <Box>
-          <IconButton onClick={createAChat} size="large">
+          <IconButton onClick={() => createAChat()} size="large">
             <ChatIcon />
           </IconButton>
         </Box>
@@ -73,7 +71,7 @@ function Sidebar() {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={createAChat}
+        onClick={() => createAChat()}
       >
         Start a new chat
       </Button>

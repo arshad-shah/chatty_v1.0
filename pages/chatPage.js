@@ -1,5 +1,4 @@
 import { Avatar, Box, Button, IconButton } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import ChatIcon from "@mui/icons-material/Chat";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import * as EmailValidator from "email-validator";
@@ -9,9 +8,22 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import Chat from "../components/Chat";
 import { useState } from "react";
 import CreateChatDialog from "../components/CreateChatDialog";
+import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles((theme) => ({
   root: {
     borderRight: "1px solid whitesmoke",
+  },
+  Header: {
+  display: "flex",
+  position: "sticky",
+  top: 0,
+  backgroundColor: "white",
+  zIndex: 1,
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "15px",
+  height: "80px",
+borderBottom: "1px solid whitesmoke",
   },
 }));
 function ChatPage() {
@@ -50,17 +62,14 @@ function ChatPage() {
     );
   return (
     <Box className={classes.root}>
-      <Header>
+      <Box className={classes.Header}>
         <Avatar src={user.photoURL} onClick={() => auth.signOut()} />
-        <IconsContainer>
+        <Box>
           <IconButton onClick={createAChat} size="large">
             <ChatIcon />
           </IconButton>
-          <IconButton size="large">
-            <MoreVertIcon />
-          </IconButton>
-        </IconsContainer>
-      </Header>
+        </Box>
+      </Box>
       <Button
         fullWidth
         variant="contained"
@@ -79,17 +88,3 @@ function ChatPage() {
 }
 
 export default ChatPage;
-const Header = styled.div`
-  display: flex;
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 1;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  height: 80px;
-  border-bottom: 1px solid whitesmoke;
-`;
-
-const IconsContainer = styled.div``;

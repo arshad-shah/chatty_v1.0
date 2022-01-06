@@ -3,7 +3,7 @@ import Sidebar from "../../components/Sidebar";
 import ChatScreen from "../../components/ChatScreen";
 import { auth, db } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import getRecipientEmail from "../../utils/getRecipientEmail";
+import { getRecipientEmailLite } from "../../utils/getRecipientEmail";
 import { Box, Hidden } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -21,7 +21,7 @@ ChatContainer: {
     display: "none",
   },
   "-ms-overflow-style": "none",
-  scrollbarWidth: "none",
+  scrollbarWidth: "none"
 },
 
 }));
@@ -29,10 +29,12 @@ ChatContainer: {
 function Chat({ chat, messages }) {
   const classes = useStyles();
   const [user] = useAuthState(auth);
+
+  const recipientEmail = getRecipientEmailLite(chat.users, user);
   return (
     <Box className={classes.Container}>
       <Head>
-        <title>Chat with {getRecipientEmail(chat.users, user)}</title>
+        <title>Chat with {recipientEmail}</title>
       </Head>
       <Hidden mdDown>
         <Sidebar />

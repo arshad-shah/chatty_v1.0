@@ -1,4 +1,11 @@
-import { Avatar, Box, Hidden, IconButton, TextField } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Hidden,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import { useRouter } from "next/dist/client/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
@@ -6,66 +13,86 @@ import Message from "./Message";
 import { useCollection } from "react-firebase-hooks/firestore";
 import {
   ArrowBackTwoTone,
-  ArrowLeftRounded,
   InsertEmoticon,
   Mic,
   SendRounded,
 } from "@mui/icons-material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import firebase from "firebase/compat/app";
-import getRecipientEmail from "../utils/getRecipientEmail";
+import { getRecipientEmailLite } from "../utils/getRecipientEmail";
 import TimeAgo from "timeago-react";
 import { makeStyles } from "@mui/styles";
 
+import dynamic from "next/dynamic";
+import UploadDialog from "./uploadDialog";
+
+const PickerWithNoSSR = dynamic(() => import("emoji-picker-react"), {
+  ssr: false,
+});
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
   InputContainer: {
-  display: "flex",
-  alignItems: "center",
-  padding: "10px",
-  position: "sticky",
-  bottom: 0,
-  backgroundColor: "white",
-  zIndex: 100,
+    display: "flex",
+    alignItems: "center",
+    padding: "10px",
+    position: "sticky",
+    bottom: 0,
+    backgroundColor: "white",
+    zIndex: 100,
   },
   Header: {
-  position: "sticky",
-  backgroundColor: "white",
-  zIndex: 100,
-  top: 0,
-  display: "flex",
-  padding: "11px",
-  height: "80px",
-  alignItems: "center",
-  borderBottom: "1px solid whitesmoke",
+    position: "sticky",
+    backgroundColor: "white",
+    zIndex: 100,
+    top: 0,
+    display: "flex",
+    padding: "11px",
+    height: "80px",
+    alignItems: "center",
+    borderBottom: "1px solid whitesmoke",
   },
 
   HeaderInformation: {
     marginLeft: "15px",
     flex: 1,
-  "> h3":{
-    marginBottom: "3px"
+    "> h3": {
+      marginBottom: "3px",
+    },
+    " > p ": {
+      fontSize: "14px",
+      color: "gray",
+    },
   },
- " > p ":{
-    fontSize: "14px",
-    color: "gray",
-  }
-},
 
   MessageContainer: {
     padding: "30px",
-  backgroundColor: "#e5ded8",
+    backgroundColor: "#e5ded8",
     minHeight: "90vh",
   },
-EndOfMessage:
-  {marginBottom: "50px"}
+  EndOfMessage: { marginBottom: "50px" },
 }));
 
 function ChatScreen({ chat, messages }) {
   const classes = useStyles();
+
+  const [openPicker, setOpenPicker] = useState(false);
+
+  const [fileUrl, setFileUrl] = useState("");
+
+  useEffect(() => {
+    if (fileUrl) {
+      setInput(fileUrl);
+    }
+  }, [fileUrl]);
+
+  const onEmojiClick = (event, emojiObject) => {
+    setInput((prevInput) => prevInput + emojiObject.emoji);
+    setOpenPicker(false);
+  };
+
   const [user] = useAuthState(auth);
   const [input, setInput] = useState("");
   const router = useRouter();
@@ -78,10 +105,9 @@ function ChatScreen({ chat, messages }) {
       .orderBy("timestamp", "asc")
   );
 
+  const recipientEmail = getRecipientEmailLite(chat.users, user);
   const [recipientSnapshot] = useCollection(
-    db
-      .collection("users")
-      .where("email", "==", getRecipientEmail(chat.users, user))
+    db.collection("users").where("email", "==", recipientEmail)
   );
 
   const scrollToBottom = () => {
@@ -130,11 +156,11 @@ function ChatScreen({ chat, messages }) {
     scrollToBottom();
   };
   const recipient = recipientSnapshot?.docs?.[0]?.data();
-  const recipientEmail = getRecipientEmail(chat.users, user);
 
   const goBackToChats = () => {
-    router.push(`/chatScreen`);
+    router.push(`/chatPage`);
   };
+
   return (
     <Box className={classes.root}>
       <Box className={classes.Header}>
@@ -170,7 +196,7 @@ function ChatScreen({ chat, messages }) {
       </Box>
 
       <form className={classes.InputContainer}>
-        <IconButton size="large">
+        <IconButton size="large" onClick={() => setOpenPicker((val) => !val)}>
           <InsertEmoticon />
         </IconButton>
         <TextField
@@ -179,11 +205,36 @@ function ChatScreen({ chat, messages }) {
           fullWidth
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          // TODO: the attachment button is not working yet it needs to show the picture as it uploads it on both sides
+          // InputProps={{
+          //   endAdornment: (
+          //     <UploadDialog setFileUrl={setFileUrl} chatId={router.query.id} />
+          //   ),
+          // }}
         />
         <IconButton size="large" onClick={sendMessage}>
           <SendRounded />
         </IconButton>
       </form>
+      {openPicker && (
+        <PickerWithNoSSR
+          pickerStyle={{ width: "100%", bottom: 0 }}
+          onEmojiClick={onEmojiClick}
+          native
+          disableSearchBar
+          groupNames={{
+            smileys_people: "faces",
+            animals_nature: "nature",
+            food_drink: "food",
+            travel_places: "travel",
+            activities: "activities",
+            objects: "Objects",
+            symbols: "symbols",
+            flags: "flags",
+            recently_used: "recently Used",
+          }}
+        />
+      )}
     </Box>
   );
 }
